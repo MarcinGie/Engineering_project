@@ -1,0 +1,121 @@
+\documentclass[11pt]{aghdpl}
+% \documentclass[en,11pt]{aghdpl}  % praca w języku angielskim
+\usepackage[polish]{babel}
+% \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+%---------------------------------------------------------------------------
+% dodatkowe pakiety
+
+\usepackage{enumerate}
+\usepackage{listings}
+\lstloadlanguages{TeX}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{url}
+
+\lstset{
+  literate={ą}{{\k{a}}}1
+           {ć}{{\'c}}1
+           {ę}{{\k{e}}}1
+           {ó}{{\'o}}1
+           {ń}{{\'n}}1
+           {ł}{{\l{}}}1
+           {ś}{{\'s}}1
+           {ź}{{\'z}}1
+           {ż}{{\.z}}1
+           {Ą}{{\k{A}}}1
+           {Ć}{{\'C}}1
+           {Ę}{{\k{E}}}1
+           {Ó}{{\'O}}1
+           {Ń}{{\'N}}1
+           {Ł}{{\L{}}}1
+           {Ś}{{\'S}}1
+           {Ź}{{\'Z}}1
+           {Ż}{{\.Z}}1
+}
+
+%---------------------------------------------------------------------------
+
+\author{Marcin Grześkowiak}
+\shortauthor{M. Grześkowiak}
+
+\titlePL{Detekcja znaków kolejowych klasy W11p na podstawie koloru}
+\titleEN{Detection of the W11p railway signs based on color}
+
+\shorttitlePL{Detekcja znaków kolejowych klasy W11p na podstawie koloru} % skrócona wersja tytułu jeśli jest bardzo długi
+\shorttitleEN{Thesis in \LaTeX}
+
+\thesistype{Praca dyplomowa inżynierska}
+%\thesistype{Master of Science Thesis}
+
+\supervisor{dr inż. Zbigniew Mikrut}
+%\supervisor{Zbigniew Mikrut PhD, DSc}
+
+\degreeprogramme{Informatyka}
+%\degreeprogramme{Computer Science}
+
+\date{2015}
+
+\department{Katedra Automatyki i Inżynierii Biomedycznej}
+%\department{Department of Automatics and Bioengineering}
+
+\faculty{Wydział Elektrotechniki, Automatyki,\protect\\[-1mm] Informatyki i Inżynierii Biomedycznej}
+%\faculty{Faculty of Electrical Engineering, Automatics, Computer Science and Biomedical Engineering}
+
+\acknowledgements{Składam serdeczne podziękowania Promotorowi dr inż. Zbigniewowi Mikrutowi za cierpliwość i poświęcony czas.}
+
+
+\setlength{\cftsecnumwidth}{10mm}
+
+%---------------------------------------------------------------------------
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+\titlepages
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\clearpage
+
+\include{rozdzial_1_wstep}
+\include{rozdzial_2_rys}
+\include{rozdzial_3_badania}
+\include{rozdzial_4_koncepcja}
+\include{rozdzial_5_realizacja}
+\include{rozdzial_6_podsumowanie}
+\include{dodatek_1_instrukcja}
+\include{dodatek_2_opis}
+\include{dodatek_3_spis}
+
+% itd.
+% \appendix
+% \include{dodatekA}
+% \include{dodatekB}
+% itd.
+
+\bibliographystyle{alpha}
+\bibliography{Literatura}
+%\begin{thebibliography}{1}
+%
+%\bibitem{Dil00}
+%A.~Diller.
+%\newblock {\em LaTeX wiersz po wierszu}.
+%\newblock Wydawnictwo Helion, Gliwice, 2000.
+%
+%\bibitem{Lam92}
+%L.~Lamport.
+%\newblock {\em LaTeX system przygotowywania dokumentów}.
+%\newblock Wydawnictwo Ariel, Krakow, 1992.
+%
+%\bibitem{Alvis2011}
+%M.~Szpyrka.
+%\newblock {\em {On Line Alvis Manual}}.
+%\newblock AGH University of Science and Technology, 2011.cccccc
+%\newblock \\\texttt{http://fm.ia.agh.edu.pl/alvis:manual}.
+%
+%\end{thebibliography}
+
+\end{document}

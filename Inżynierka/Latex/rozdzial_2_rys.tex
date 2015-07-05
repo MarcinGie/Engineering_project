@@ -1,0 +1,43 @@
+\chapter{Rys historyczny i podstawy teoretyczne}
+\label{cha:rysipodstawy}
+
+% potrzeba jakiegos wprowadzenia?
+
+%---------------------------------------------------------------------------
+
+\section{Rys historyczny}
+\label{sec:ryshistoryczny}
+\subsection{Teoria}
+Rozpoznawianie obrazów jest nierozerwalnie związane z badaniami nad sztuczną inteligencją. Jest to dziedzina nauki zajmująca się wykorzystaniem maszyn, przede wszystkim komputerów, do wykonywania zadań wymagających ludzkiej inteligencji. Zastosowania tejże dziedziny są nieustannie poszerzane w związku z dynamicznym rozwojem informatyki. Wiele zagadnień dotychczasowo pojmowanych jako problemu wymagające zachowań inteligentnych straciło na znaczeniu na skutek rozwoju technologii. Zmiany te nastąpiły w skutek nieprecyzyjnej definicji inteligencji. Wiele problemów klasyfikowanych jako typowe zagadnienia sztucznej inteligencji obecnie stanowi zagadnienia poruszane w szkołach podczas nauki podstaw algorytmiki. Najlepszym tego przykładem jest zagadnienie "Wież Hanoi". Jednak sztuczna inteligencja nadal zajmuje się problematyką rozpoznawania obrazów.
+Polskie tłumaczenie rozpoznawanie obrazów, z angielskiego pattern recognition nie pozwala uchwycić całokształtu tego zagadnienia. Może się ona kojarzyć z przetwarzaniem zdjęć w dwóch wymiarach lub scen wirtualnej rzeczywistości opierającej się na trzech wymiarach. Możliwe, że bardziej trafnym byłoby tu dosłowne tłumaczenie, tj. rozpoznawanie wzorców. Pojęcie rozpoznawania obrazów zostało właściwie sprecyzowane w skrypcie Ryszarda Tadeusiewicza i Mariusza Flasińskiego [??]:
+
+"Ogólnie w zadaniu rozpoznawania obrazów chodzi o rozpoznawanie przynależności rozmaitego
+typu obiektów (lub zjawisk) do pewnych klas. Rozpoznawanie to ma być prowadzone
+w sytuacji braku apriorycznej informacji na temat reguł przynależności obiektów do
+poszczególnych klas, a jedyna informacja możliwa do wykorzystania przez algorytm lub
+maszynę rozpoznającą jest zawarta w ciągu uczącym, złożonym z obiektów, dla których
+znana jest prawidłowa klasyfikacja."
+
+Maszyna odpowiedzialna za rozpoznawanie obrazów ma za zadanie klasyfikować obiekty biorąc pod uwagę wiedzę o kilku reprezentantach - zbiorze uczącym. Człowiek nie jest w stanie do końca określić sposobu w jaki sam rozpoznaje przedmioty czy kształty na obrazach, zatem nie jest też w stanie przekazać maszynie dokładnych algorytmów działania. Oznacza to, że dziedzina rozpoznawania obrazów jest ciągle poligonem doświadczalnym, na którym ludzie starają się przekazać maszynie jak najlepszy sposób rozpoznawania obiektów. Niestety powoduje to, że zastosowanie rozwiązań teoretycznie sprawdzających się doskonale jest mocno ograniczone.
+
+Niezależnie od wybranej metody rozpoznawanie obrazów rozpoczynamy zawsze od tych samych podstaw. W przedstawionym przypadku zastosowano podejście strukturalne, tj. wybrano wyróżniające obiekt cechy (wyróżniający się kolor oraz kształt) i wykorzystano je przy poszukiwaniu obiektu na obrazie.
+
+\subsection{Rozpoznawanie obrazów w detekcji znaków}
+
+Może będzie tu historia researchu rozpoznawiania znaków ale zależy ile będzie stron. suspiszus
+
+\subsection{Podstawy przetwarzania obrazów}
+Kluczową cechą komputerowych systemów przetwarzania obrazów jest dyskretyzacja rzeczywistości. Spowodowane jest to ograniczoną rozdzieczością przetworników analogowo-cyfrowych, takich jak aparaty, kamery czy mierniki laserowe. Obrazy pobrane przy pomocy m.in. powyższych urządzeń są reprezentowane przy pomocy siatki kwadratowej lub (rzadziej) siatki heksagonalnej o skończonym rozmiarze. Siatka heksagonalna pozwala na reprezentację odpowiadającą obrazom przetwarzanym przez ludzki narząd wzroku(rozmieszczenie receptorów w gałce ocznej człowieka można najwłaściwiej odwzorować siatką heksagonalną). O ile jest to bardziej "naturalne" rozwiązanie, to niestety jest ono mniej popularne. Podyktowane jest to przede wszystkim bardziej złożonymi algorytmami, przetwarzającymi obrazy heksagonalne, czy też mniejszą intuicyjnością takich implementacji.
+Alternatywą dla siatki heksagonalnej jest siatka kwadratowa. Jest ona o wiele prostsza i wygodniejsza przy implementacji algorytmów przetwarzania obrazów.
+Mówiąc o dyskretyzacji rzeczywistości należy wprowadzić pojęcie rozdzielczości obrazu. Wynika ona bezpośrednio z rozdzielczości urządzeń pobierających obraz, zatem nie może być nieograniczona. Definicję rozdzielczości możemy przytoczyć z pracy Tadeusiewicza i Korohody[33]:
+Wyraża się ona ilością elementów podstawowych składających się na obraz. Najczęściej
+przy płaskich obrazach o kwadratowej siatce zapisywana jest ona jako iloczyn ilości elementów
+w poziomie i pionie obrazu.
+Dobranie optymalnej rozdzielczości pozwala na zachowanie szczegółów obrazu kluczowych do ich przetwarzania przy, a za razem umożliwia dostosowania wielkości danych wejściowych(obrazów) pozwalając na kontrolę czasu przetwarzania obrazów. Z jednej strony chcielibyśmy mieć jak najlepsze dane pozwalające łatwe na wyekstrahowanie cech obiektów na obrazie, lecz z drugiej strony algorytmy przetwarzania obrazów są zwykle bardzo czasochłonne, co zmusza do ograniczenia rozdzielczości, aby algorytmy wykonywały się w sensownym czasie. Konstruktor systemu przetwarzania obrazów niejednokrotnie musi iść na kompromis w tej kwestii.
+Każda najmniejsza część obrazu cyfrowego(piksel) przechowuje swoją wartość, która oznacza jej kolor. Kolor może być jedną z ustalonych wartości. O dziedzinie tej wartość wybrana decyduje przestrzeń kolorów w jakiej obraz został zapisany i łączy się to z ilością bitów jakie przeznaczymy na zapis koloru pojedynczego piksela. Tu też niejednokrotnie trzeba pójść na kompromis. Najpopularniejsze rodzaje obrazów to:
+\textbf{binarny} - informacja o kolorze zapisana na 1 bicie. Zapis najprostszy i zajmujący najmniej pamięci. Ułatwia tworzenie algorytmów operujących na takim obrazie i dramatycznie przyspiesza obliczenia.
+\textbf{monochromatyczny} - informacja o kolorze zapisana jest na 8 bitach. Przechowują one informację o kolorze z dziedziny 256 odcieni szarości.
+\textbf{kolorowy} - informacja o kolorze zapisywana jest na 24 bitach. Pozwala to na przechowywanie informacji o jednym z 16,7 milionów kolorów.
+
+%---------------------------------------------------------------------------
+

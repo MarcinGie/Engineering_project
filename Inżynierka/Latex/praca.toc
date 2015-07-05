@@ -1,0 +1,16 @@
+\select@language {polish}
+\contentsline {chapter}{\numberline {1}Wprowadzenie}{7}
+\contentsline {section}{\numberline {1.1}Cele pracy}{7}
+\contentsline {section}{\numberline {1.2}Zawarto\IeC {\'s}\IeC {\'c} pracy}{7}
+\contentsline {chapter}{\numberline {2}Rys historyczny i podstawy teoretyczne}{9}
+\contentsline {section}{\numberline {2.1}Rys historyczny}{9}
+\contentsline {subsection}{\numberline {2.1.1}Teoria}{9}
+\contentsline {subsection}{\numberline {2.1.2}Rozpoznawanie obraz\IeC {\'o}w w detekcji znak\IeC {\'o}w}{10}
+\contentsline {subsection}{\numberline {2.1.3}Podstawy przetwarzania obraz\IeC {\'o}w}{10}
+\contentsline {chapter}{\numberline {3}Badania literaturowe}{13}
+\contentsline {chapter}{\numberline {4}Koncepcja proponowanego rozwi\IeC {\k a}zania}{15}
+\contentsline {chapter}{\numberline {5}Realizacja i wyniki testowania}{17}
+\contentsline {chapter}{\numberline {6}Podsumowanie i perspektywy}{19}
+\contentsline {chapter}{\numberline {7}Instrukcja u\IeC {\.z}ytkowania oprogramowania}{21}
+\contentsline {chapter}{\numberline {8}Opis informatyczny procedur}{23}
+\contentsline {chapter}{\numberline {9}Spis zawartoci dolaczonych nosnikow}{25}
