@@ -4,7 +4,7 @@ clear all;
 
 %% 1
 
-sciezka_data = 'C:\Users\Marcin\Desktop\W11p\obrazy-uczenie\';
+sciezka_data = '..\W11p\obrazy-uczenie\';
 spis_tst = 'pliki.txt'; % spis plikow do testowania
 fil_tst = fopen([sciezka_data spis_tst]);
 

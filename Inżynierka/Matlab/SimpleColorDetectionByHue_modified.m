@@ -52,7 +52,7 @@ try
 
 	% Open an images.
     % Change default directory to the one containing the standard demo images for the MATLAB Image Processing Toolbox. 
-    sciezka_data = 'C:\Users\Marcin\Desktop\W11p\obrazy-test2\';
+    sciezka_data = '..\W11p\obrazy-test2\';
     spis_tst = 'pliki.txt'; % spis plikow do testowania
     fil_tst = fopen([sciezka_data spis_tst]);
     
