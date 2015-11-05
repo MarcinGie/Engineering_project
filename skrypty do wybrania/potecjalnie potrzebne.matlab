@@ -1,3 +1,5 @@
+%% R1
+
 przyciecie=[0,a/3,b,(a/3)*2]; %% zmiana przyciêcia obrazu!!!!!
 O_3=imcrop(O,przyciecie);
 Or=imresize(O_3,0.25); %% zmiana rozdzielczoœci przetwarzania
@@ -28,3 +30,7 @@ if a>0
 else
     P_OST=P_DO;
 end
+
+%% R2
+
+DYL = imdilate(R(eee,1).K1_OST,dysk_2); %dylatacja tylko po to, żeby połączyć obszary leżące blisko w jeden
