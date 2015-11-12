@@ -33,4 +33,11 @@ end
 
 %% R2
 
+dysk_2=strel('disk',6);
 DYL = imdilate(R(eee,1).K1_OST,dysk_2); %dylatacja tylko po to, żeby połączyć obszary leżące blisko w jeden
+
+
+IL=bwlabel(DYL); - Label connected components
+STATS = regionprops(IL, 'BoundingBox'); - Returns the smallest rectangle containing the region
+
+B1 = bwareaopen(B, 10); % usuniêcie ma³ych obiektówv
