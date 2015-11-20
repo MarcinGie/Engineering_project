@@ -13,7 +13,7 @@ STATS = regionprops(P_WDZ, 'Orientation'); %obliczenie orientacji wszystkich poj
 IL=bwlabel(P_WDZ); %zlabelowanie wszystkich obiektów
 ind = find([STATS.Orientation] >= 45 | [STATS.Orientation] <= -45); %wybór obiektów o odpowiednim nachyleniu
 P_ODS = ismember(IL,ind); %odsiew
-STATS = regionprops(P_ODS, 'MajorAxisLength','MinorAxisLength'); %obliczenie przek¹tnych obiektów
+STATS = regionprops(P_ODS, 'MajorAxisLength','MinorAxisLength'); %obliczenie przekątnych obiektów
 [a b]=size(STATS);
 if a>0
         for i=1:a %dodanie informacji o stosunku boków
