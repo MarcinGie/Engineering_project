@@ -1,13 +1,13 @@
 %% R1
 
-przyciecie=[0,a/3,b,(a/3)*2]; %% zmiana przyciêcia obrazu!!!!!
+przyciecie=[0,a/3,b,(a/3)*2]; %% zmiana przycięcia obrazu!!!!!
 O_3=imcrop(O,przyciecie);
-Or=imresize(O_3,0.25); %% zmiana rozdzielczoœci przetwarzania
+Or=imresize(O_3,0.25); %% zmiana rozdzielczości przetwarzania
 Or_hsv=rgb2hsv(Or);
 
 
-P_300 = bwareaopen(R(eee,1).K1pr_auto, 50); %usuniêcie obiektów o mniejszej iloœci pikseli ni¿ 50
-P_WDZ = imfill(P_300, 'holes'); %wype³nienie dziur
+P_300 = bwareaopen(R(eee,1).K1pr_auto, 50); %usunięcie obiektów o mniejszej ilości pikseli niż 50
+P_WDZ = imfill(P_300, 'holes'); %wypełnienie dziur
 
 STATS = regionprops(P_WDZ, 'Orientation'); %obliczenie orientacji wszystkich pojedynczych obiektów
 IL=bwlabel(P_WDZ); %zlabelowanie wszystkich obiektów
@@ -40,4 +40,4 @@ DYL = imdilate(R(eee,1).K1_OST,dysk_2); %dylatacja tylko po to, żeby połączy�
 IL=bwlabel(DYL); - Label connected components
 STATS = regionprops(IL, 'BoundingBox'); - Returns the smallest rectangle containing the region
 
-B1 = bwareaopen(B, 10); % usuniêcie ma³ych obiektówv
+B1 = bwareaopen(B, 10); % usunięcie małych obiektów

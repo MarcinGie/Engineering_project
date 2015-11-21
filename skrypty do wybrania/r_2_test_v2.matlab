@@ -1,8 +1,8 @@
 % autor: E.Pastucha
 % skrypt wczytuje wyniki przetwarzania sieci neuronowej na obrazach o
-% zmniejszonej rozdzielczoœci,  przeszukuje obrazy w trzech petlach zmiany
-% progu znajduj¹c obszary zainteresowania do dalszego przetwarzania w
-% oryginalnej rozdzielczoœci. Ustala ostateczn¹ wielkoœæ BoundingBox 
+% zmniejszonej rozdzielczości,  przeszukuje obrazy w trzech petlach zmiany
+% progu znajdując obszary zainteresowania do dalszego przetwarzania w
+% oryginalnej rozdzielczoœci. Ustala ostateczną wielkość BoundingBox 
 
 
 tic
@@ -19,7 +19,7 @@ dod_p=[0,0,10,0];
 for eee=1:119
     
     if R(eee,1).t==1
-    DYL = imdilate(R(eee,1).K1_OST,dysk_2); %dylatacja tylko po to, ¿eby po³¹czyæ obszary le¿¹ce blisko w jeden
+    DYL = imdilate(R(eee,1).K1_OST,dysk_2); %dylatacja tylko po to, żeby połączyć obszary leżące blisko w jeden
     
     IL=bwlabel(DYL);
     STATS = regionprops(IL, 'BoundingBox');
@@ -28,17 +28,17 @@ for eee=1:119
     
 	for j=1:a
         bb_pow= STATS(j,1).BoundingBox; %pierwszy zakres przetwarzania
-        proba=0; %warunek pêtli 
-        proba2=0; %warunek pêtli 2
+        proba=0; %warunek pętli 
+        proba2=0; %warunek pętli 2
         WYCINEK=imcrop(R(eee,1).K1, bb_pow);
         B=im2bw(WYCINEK, R(eee,1).prog); %progowanie na podstawie pierwszego progu automatycznego
-        B1 = bwareaopen(B, 10); % usuniêcie ma³ych obiektów
+        B1 = bwareaopen(B, 10); % usuniêcie małych obiektów
         IL_OB=bwlabel(B1,8);
         if nnz(IL_OB)>0
             stat_at=regionprops(IL_OB,'Area','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation','FilledImage');
             poloz_at=find([stat_at.Area] == max([stat_at.Area])); %znalezienie najwiekszego obiektu
-            [fa1_at fa2_at]=size(stat_at(poloz_at,1).FilledImage); %rozmiary najwiekszego obiektu
-            FA_at=stat_at(poloz_at,1).Area/(fa1_at*fa2_at); 
+            [fa1_at fa2_at]=size(stat_at(poloz_at,1).FilledImage); %pobranie rozmiarów najwiekszego obiektu
+            FA_at=stat_at(poloz_at,1).Area/(fa1_at*fa2_at); %część obszaru zajęta przez znak
             mimj_at=stat_at(poloz_at,1).MinorAxisLength/stat_at(poloz_at,1).MajorAxisLength; %stusunek dlugosci bokow
             if stat_at(poloz_at,1).Orientation<-85 || stat_at(poloz_at,1).Orientation>85 %kąt między elipsą najwiekszego obiektu a osią X
             	pr_fa_at=0.50;
@@ -67,22 +67,22 @@ for eee=1:119
                	sprpol=find([sprt.Area] == max([sprt.Area]));
                	sp_mimj=sprt(sprpol,1).MinorAxisLength/sprt(sprpol,1).MajorAxisLength;
                	[spa spb]=size(sprt(sprpol,1).FilledImage);
-               	sp_fa=sprt(sprpol,1).Area/(spa*spb);
+               	sp_fa=sprt(sprpol,1).Area/(spa*spb); %część obszaru zajęta przez znak
                 ode_sp=sqrt(((sp_mimj-mimj_ideal)^2)+((sp_fa-fa_ideal)^2));
                 
                 for i=R(eee,1).prog:-0.0001:0.7
-                    if proba3==1, break, end % wyjœcie z pêtli, je¿eli zaczyna siê pogarszaæ
+                    if proba3==1, break, end % wyjście z pętli, jeżeli zaczyna się pogarszać
                     %-----------------------------------------------------------
                     WYCINEK=imcrop(R(eee,1).K1, bb_pow);
-                    % obliczenie paramerów stat dla obrazu rozwa¿anego
-                    SN_0=im2bw(WYCINEK, i); %obraz binarny rozwa¿any
-                    SN = bwareaopen(SN_0, 50); %usuniêcie obszarów poni¿ej 300 pikseli
-                    SNIL=bwlabel(SN); % mo¿e zostaæ teoretycznie wiêcej ni¿ 1 obszar, wiêc sprawdzenie
-                    snt=regionprops(SNIL,'Area','Orientation','BoundingBox'); %po pierwsze orientacja do obrotu, ale te¿ powierzchnia, ¿eby orientacja by³a barna od najwiêkszego obszaru
-                    % odnalezienie najwiêkszego obszaru
+                    % obliczenie paramerów stat dla obrazu rozważanego
+                    SN_0=im2bw(WYCINEK, i); %obraz binarny rozważany
+                    SN = bwareaopen(SN_0, 50); %usunięcie obszarów poniżej 300 pikseli
+                    SNIL=bwlabel(SN); % może zostać teoretycznie więcej niż 1 obszar, więc sprawdzenie
+                    snt=regionprops(SNIL,'Area','Orientation','BoundingBox'); %po pierwsze orientacja do obrotu, ale też powierzchnia, żeby orientacja była barna od największego obszaru
+                    % odnalezienie największego obszaru
                     snpol=find([snt.Area] == max([snt.Area]));
                     
-                    if snt(snpol,1).Orientation<0 %wyznaczenie k¹ta dla imrotate
+                    if snt(snpol,1).Orientation<0 %wyznaczenie kąta dla imrotate
                     	kat=-90-snt(snpol,1).Orientation;
                     else
                     	kat=90-snt(snpol,1).Orientation;
@@ -91,14 +91,14 @@ for eee=1:119
                     SNR_0=imrotate(SN,kat);
                     SNR = bwareaopen(SNR_0, 10);
                     SNRIL=bwlabel(SNR);
-                    %odnalezeienie najwiêkszego obszaru
+                    %odnalezeienie największego obszaru
                     snrt=regionprops(SNR,'Area','MajorAxisLength','MinorAxisLength','FilledImage','BoundingBox');
                     snrpol=find([snrt.Area] == max([snrt.Area]));
                     sn_mimj=(snrt(snrpol,1).MinorAxisLength)/(snrt(snrpol,1).MajorAxisLength);
                     [sna snb]=size(snrt(snrpol,1).FilledImage);
                     sn_fa=snrt(snrpol,1).Area/(sna*snb);
                     % --------------------------------------------------------------------------------
-                   	% obliczenie odleg³oœci euklidesowej
+                   	% obliczenie odlegości euklidesowej
                    	ode_sn=sqrt(((sn_mimj-mimj_ideal)^2)+((sn_fa-fa_ideal)^2));
                     
                    	if ode_sn>ode_sp %& sprt(sprpol,1).Area>3100
@@ -106,7 +106,7 @@ for eee=1:119
                      	R(eee,1).W_O(j,1).bz=0;
                       	R(eee,1).W_O(j,1).OB=im2bw(WYCINEK,(i+0.0001));
                       	R(eee,1).W_O(j,1).prog=i+0.0001;
-                       	R(eee,1).W_O(j,1).bb=bb_pow; % zapisanie parametrów w celu póŸniejszego wykorzystania
+                       	R(eee,1).W_O(j,1).bb=bb_pow; % zapisanie parametrów w celu późniejszego wykorzystania
                        	R(eee,1).W_O(j,1).SPR=SPR;
                         R(eee,1).W_O(j,1).SP=SP;
                         R(eee,1).W_O(j,1).odl=ode_sp;
@@ -138,12 +138,12 @@ for eee=1:119
                     	WYC=imcrop(R(eee,1).K1, bb_pow);
                         rozx=bb_pow(1,3);
                         rozy=bb_pow(1,4);
-                        % obliczenie paramerów stat dla obrazu rozwa¿anego
-                        bbt_0=im2bw(WYC, i); %obraz binarny rozwa¿any
-                        bbt = bwareaopen(bbt_0, 50); %usuniêcie obszarów poni¿ej 300 pikseli
-                        bbtIL=bwlabel(bbt); % mo¿e zostaæ teoretycznie wiêcej ni¿ 1 obszar, wiêc sprawdzenie
-                        bbts=regionprops(bbtIL,'Area','BoundingBox'); %po pierwsze orientacja do obrotu, ale te¿ powierzchnia, ¿eby orientacja by³a barna od najwiêkszego obszaru
-                        % odnalezienie najwiêkszego obszaru
+                        % obliczenie paramerów stat dla obrazu rozważanego
+                        bbt_0=im2bw(WYC, i); %obraz binarny rozważany
+                        bbt = bwareaopen(bbt_0, 50); %usunięcie obszarów poniżej 300 pikseli
+                        bbtIL=bwlabel(bbt); % może zostać teoretycznie więcej niż 1 obszar, więc sprawdzenie
+                        bbts=regionprops(bbtIL,'Area','BoundingBox'); %po pierwsze orientacja do obrotu, ale też powierzchnia, żeby orientacja była barna od największego obszaru
+                        % odnalezienie największego obszaru
                         bbtpol=find([bbts.Area] == max([bbts.Area]));
                         tragedyjka=0;
                         if proba3==0 && bb_pow(1,3)<60 && bb_pow(1,4)<100
@@ -170,7 +170,7 @@ for eee=1:119
             clearvars -except i j a R eee dysk dysk_2 mimj_ideal fa_ideal dod_g dod_d dod_l dod_p bb_pow proba proba2 STATS
         end
 %..................................................................................................................................................................................................................
-      for i=1:-0.0001:0.7 % pêtla w³aœciwego doboru progu
+      for i=1:-0.0001:0.7 % pętla właściwego doboru progu
             
             WYCINEK=imcrop(R(eee,1).K1, bb_pow);
 
@@ -178,16 +178,16 @@ for eee=1:119
             
             B=im2bw(WYCINEK,i); % progowanie na podstawie dynamicznego progu
             
-            B1 = bwareaopen(B, 50); % usuniêcie ma³ych obiektów
-            IL_OB=bwlabel(B1); % numerowanie pozosta³ych obiektów
+            B1 = bwareaopen(B, 50); % usuniêcie małych obiektów
+            IL_OB=bwlabel(B1); % numerowanie pozostałych obiektów
             
             if nnz(IL_OB)>0
-            stat=regionprops(IL_OB,'Area','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation','FilledImage'); % statystyka pozosta³ych obiektów
-            % nie powinno byæ wiecej ni¿ jeden obiekt, ale je¿eli coœ takiego siê stanie, statystyka bêdzie brana pod uwagê dla najwiêkszego obiektu
+            stat=regionprops(IL_OB,'Area','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation','FilledImage'); % statystyka pozostałych obiektów
+            % nie powinno być wiecej niż jeden obiekt, ale jeżeli coś takiego się stanie, statystyka będzie brana pod uwagę dla największego obiektu
             polo=find([stat.Area] == max([stat.Area]));
             polozenie=polo(1,1);
             [fa1 fa2]=size(stat(polozenie,1).FilledImage); 
-            FA=stat(polozenie,1).Area/(fa1*fa2); %czeœæ obszaru zajêta przez znak
+            FA=stat(polozenie,1).Area/(fa1*fa2); %część obszaru zajęta przez znak
             
             mimj=stat(polozenie,1).MinorAxisLength/stat(polozenie,1).MajorAxisLength; %stosunek x/y 
             if stat(polozenie,1).Orientation<-85 || stat(polozenie,1).Orientation>85
@@ -266,7 +266,7 @@ for eee=1:119
                    	% obliczenie odleg³oœci euklidesowej
                    	ode_sn=sqrt(((sn_mimj-mimj_ideal)^2)+((sn_fa-fa_ideal)^2));
                     
-                   	if ode_sn>ode_sp %& sprt(sprpol,1).Area>2500 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! by³o 3100, sprawdzenie jak teraz
+                   	if ode_sn>ode_sp %& sprt(sprpol,1).Area>2500 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! było 3100, sprawdzenie jak teraz
                     	%stat_kon=regionprops(SP,'BoundingBox');
                      	R(eee,1).W_O(j,1).bz=0;
                       	R(eee,1).W_O(j,1).OB=im2bw(WYCINEK,(z+0.0001));
@@ -627,34 +627,3 @@ for eee=1:119
 end
 
 clearvars -except R
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
