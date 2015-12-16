@@ -34,7 +34,7 @@ for eee=1:13
     ncols = size(ab,2);
     ab = reshape(ab,nrows*ncols,2);
 
-    nColors = 3;
+    nColors = 10;
     % repeat the clustering 3 times to avoid local minima
     [cluster_idx, cluster_center] = kmeans(ab,nColors,'start','uniform','emptyaction','singleton','Replicates',3,'distance','sqEuclidean');
 

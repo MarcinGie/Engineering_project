@@ -26,18 +26,18 @@ for eee=1:119
     R(eee,1).STATS=STATS;
     [a b]=size(STATS);
     
-	for j=1:a
+	for j=1:a 
         bb_pow= STATS(j,1).BoundingBox; %pierwszy zakres przetwarzania
-        proba=0; %warunek pętli 
-        proba2=0; %warunek pętli 2
+        proba=0; %warunek p?tli 
+        proba2=0; %warunek p?tli 2
         WYCINEK=imcrop(R(eee,1).K1, bb_pow);
         B=im2bw(WYCINEK, R(eee,1).prog); %progowanie na podstawie pierwszego progu automatycznego
-        B1 = bwareaopen(B, 10); % usuniêcie małych obiektów
+        B1 = bwareaopen(B, 10); % usuni?cie ma?ych obiekt�w
         IL_OB=bwlabel(B1,8);
         if nnz(IL_OB)>0
             stat_at=regionprops(IL_OB,'Area','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation','FilledImage');
             poloz_at=find([stat_at.Area] == max([stat_at.Area])); %znalezienie najwiekszego obiektu
-            [fa1_at fa2_at]=size(stat_at(poloz_at,1).FilledImage); %pobranie rozmiarów najwiekszego obiektu
+            [fa1_at fa2_at]=size(stat_at(poloz_at,1).FilledImage); %pobranie rozmiarów bounding box obiektu
             FA_at=stat_at(poloz_at,1).Area/(fa1_at*fa2_at); %część obszaru zajęta przez znak
             mimj_at=stat_at(poloz_at,1).MinorAxisLength/stat_at(poloz_at,1).MajorAxisLength; %stusunek dlugosci bokow
             if stat_at(poloz_at,1).Orientation<-85 || stat_at(poloz_at,1).Orientation>85 %kąt między elipsą najwiekszego obiektu a osią X
