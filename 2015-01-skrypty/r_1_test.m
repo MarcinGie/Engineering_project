@@ -9,8 +9,8 @@
 
 clear all, close all;
 tic
-sciezka_data = 'C:\Users\Marcin\Desktop\W11p\obrazy-test2\';
-sciezka_sieci = 'C:\Users\Marcin\Desktop\2015-01-skrypty\';
+sciezka_data = 'C:\Users\Marcin\Desktop\Engineering_project\W11p\obrazy-test2\';
+sciezka_sieci = 'C:\Users\Marcin\Desktop\Engineering_project\2015-01-skrypty\';
 spis_tst = 'pliki.txt'; % spis plikow do testowania
 nazwa_sieci='net_scalone_13'; %tu wybieramy siec
 
