@@ -44,17 +44,17 @@ for eee=1:14
     
     % Assign the low and high thresholds for each color band.
     % Take a guess at the values that might work for the user's image.
-    hueThresholdLow = double(0/255);
-    hueThresholdHigh = double(19/255);
-    saturationThresholdLow = double(30/255);
-    saturationThresholdHigh = double(255/255);
-    valueThresholdLow = double(50/255);
-    valueThresholdHigh = double(255/255);
+    R(eee,1).hueThresholdLow = double(0/255);
+    R(eee,1).hueThresholdHigh = double(19/255);
+    R(eee,1).saturationThresholdLow = double(30/255);
+    R(eee,1).saturationThresholdHigh = double(255/255);
+    R(eee,1).valueThresholdLow = double(50/255);
+    R(eee,1).valueThresholdHigh = double(255/255);
     
     % Now apply each color band's particular thresholds to the color band
-    hueMask = (hImage >= hueThresholdLow) & (hImage <= hueThresholdHigh);
-    saturationMask = (sImage >= saturationThresholdLow) & (sImage <= saturationThresholdHigh);
-    valueMask = (vImage >= valueThresholdLow) & (vImage <= valueThresholdHigh);
+    hueMask = (hImage >= R(eee,1).hueThresholdLow) & (hImage <= R(eee,1).hueThresholdHigh);
+    saturationMask = (sImage >= R(eee,1).saturationThresholdLow) & (sImage <= R(eee,1).saturationThresholdHigh);
+    valueMask = (vImage >= R(eee,1).valueThresholdLow) & (vImage <= R(eee,1).valueThresholdHigh);
 
     % Combine the masks to find where all 3 are "true."
     orangeObjectsMask = uint8(hueMask & saturationMask & valueMask);

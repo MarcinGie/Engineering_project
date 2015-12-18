@@ -1,6 +1,6 @@
 % autor: E.Pastucha
 % przetwarzanie w zakresie BoundingBox znalezionego w etapie r_2
-% na peÅ‚nej rozdzielczoÅ›ci. Doprecyzowanie wysokoÅ›ci progu i ostateczna
+% na pe³nej rozdzielczoœci. Doprecyzowanie wysokoœci progu i ostateczna
 % decyzja czy mamy do czynienia ze znakiem
 
 tic
@@ -13,29 +13,29 @@ load([sciezka_sieci nazwa_sieci]); %ladowanie sieci
 mimj_ideal=0.25;
 fa_ideal=0.85;
 
-for eee=1:14
+for eee=1:119
 	[a b]=size(R(eee,1).W_O);
     z=1;
     for j=1:a 
         if R(eee,1).W_O(j,1).bz==0 
-        	% przeliczenie BB z ukÅ‚adu mniejszej rozdzielczoÅ›ci na wiÄ™kszÄ…
+        	% przeliczenie BB z uk³adu mniejszej rozdzielczoœci na wiêksz¹
             R(eee,1).TZ(z,1).BB=4*R(eee,1).W_O(j,1).bb_pr;
             R(eee,1).TZ(z,1).Ow=imcrop(R(eee,1).O,R(eee,1).TZ(z,1).BB);
             Ow_hsv=rgb2hsv(R(eee,1).TZ(z,1).Ow);
             [aa bb cc]=size(R(eee,1).TZ(z,1).Ow);
-            D=cat(1,(reshape(Ow_hsv(:,:,1),1,(aa*bb))),(reshape(Ow_hsv(:,:,2),1,(aa*bb))),(reshape(Ow_hsv(:,:,3),1,(aa*bb)))); % wektor wejÅ›ciowy do sieci
-            k1k2=sim(net2,D); %Å‚adowanie macierzy do sieci
-            K1=reshape(k1k2(1,:),aa,bb); %obraz odpowiedzi wÄ™zÅ‚a K1 sieci 
-            %przepisanie danych testowanych do innej czÃªÅ“ci struktury, Â¿eby nie musieÃ¦ sprawdzaÃ¦ za kaÂ¿dym razem czy wczeÅ“niej nie zostaÂ³o coÅ“ wykluczone z obliczeÃ±
+            D=cat(1,(reshape(Ow_hsv(:,:,1),1,(aa*bb))),(reshape(Ow_hsv(:,:,2),1,(aa*bb))),(reshape(Ow_hsv(:,:,3),1,(aa*bb)))); % wektor wejœciowy do sieci
+            k1k2=sim(net2,D); % ³adowanie macierzy do sieci
+            K1=reshape(k1k2(1,:),aa,bb); %obraz odpowiedzi wêz³a K1 sieci 
+            %przepisanie danych testowanych do innej czêœci struktury, ¿eby nie musieæ sprawdzaæ za ka¿dym razem czy wczeœniej nie zosta³o coœ wykluczone z obliczeñ
             R(eee,1).TZ(z,1).K1=K1; 
             R(eee,1).TZ(z,1).prog=R(eee,1).W_O(j,1).prog;
             z=z+1;
-            clear D Ow_hsv aa bb cc k1k2 K1 %czyszczenie danych, bo juÂ¿ mi brakuje pomysÂ³Ã³w w nazewnictwie zmiennych
+            clear D Ow_hsv aa bb cc k1k2 K1 %czyszczenie danych, bo ju¿ mi brakuje pomys³ów w nazewnictwie zmiennych
         end
     end
 end
 %%
-for eee=1:14
+for eee=1:119
     [a b]=size(R(eee,1).TZ);
     for j=1:a
     	K=im2bw(R(eee,1).TZ(j,1).K1,R(eee,1).TZ(j,1).prog);
@@ -44,7 +44,7 @@ for eee=1:14
             pr=R(eee,1).TZ(j,1).prog;
             B=im2double(KK);
             stat=regionprops(B,'Orientation');
-            if stat.Orientation<0 %wyznaczenie kÂ¹ta dla imrotate
+            if stat.Orientation<0 %wyznaczenie k¹ta dla imrotate
                 kat=-90-stat.Orientation;
             else
                 kat=90-stat.Orientation;
@@ -57,13 +57,13 @@ for eee=1:14
             proba=0;
             R(eee,1).TZ(j,1).bz=1;
             if pr>0.7
-            for i=(pr-0.0001):-0.0001:0.7 % w poprzednim etapie dobierano w ten sposÃ³b prÃ³g, ale robiono to w mniejszej rozdzielczoÅ“ci, i z dylatacjÂ¹ wiÃªc wyniki mogÂ¹ siÃª znacznie rÃ³Â¿niÃ¦. StÂ¹d powtÃ³rne przetwarzanie.
+            for i=(pr-0.0001):-0.0001:0.7 % w poprzednim etapie dobierano w ten sposób próg, ale robiono to w mniejszej rozdzielczoœci, i z dylatacj¹ wiêc wyniki mog¹ siê znacznie ró¿niæ. St¹d powtórne przetwarzanie.
                 if proba==1, break, end 
                 Z=im2bw(R(eee,1).TZ(j,1).K1,i);
                 ZZ=bwareaopen(Z, 100);
                 W=im2double(ZZ);
                 W_stat=regionprops(W,'Orientation');
-                if W_stat.Orientation<0 %wyznaczenie kÂ¹ta dla imrotate
+                if W_stat.Orientation<0 %wyznaczenie k¹ta dla imrotate
                     kat=-90-W_stat.Orientation;
                 else
                     kat=90-W_stat.Orientation;
@@ -85,7 +85,7 @@ for eee=1:14
                     KZZ=bwareaopen(KZ, 100);
                     KW=im2double(KZZ);
                     KW_stat=regionprops(KW,'Orientation');
-                    if KW_stat.Orientation<0 %wyznaczenie kÂ¹ta dla imrotate
+                    if KW_stat.Orientation<0 %wyznaczenie k¹ta dla imrotate
                         kat=-90-KW_stat.Orientation;
                     else
                         kat=90-KW_stat.Orientation;
@@ -102,7 +102,7 @@ for eee=1:14
                     KZZ=bwareaopen(KZ, 100);
                     KW=im2double(KZZ);
                     KW_stat=regionprops(KW,'Orientation');
-                    if KW_stat.Orientation<0 %wyznaczenie kÂ¹ta dla imrotate
+                    if KW_stat.Orientation<0 %wyznaczenie k¹ta dla imrotate
                         kat=-90-KW_stat.Orientation;
                     else
                         kat=90-KW_stat.Orientation;
@@ -123,7 +123,7 @@ for eee=1:14
                 KZZ=bwareaopen(KZ, 100);
                 KW=im2double(KZZ);
                 KW_stat=regionprops(KW,'Orientation');
-                if KW_stat.Orientation<0 %wyznaczenie kÂ¹ta dla imrotate
+                if KW_stat.Orientation<0 %wyznaczenie k¹ta dla imrotate
                     kat=-90-KW_stat.Orientation;
                 else
                     kat=90-KW_stat.Orientation;
