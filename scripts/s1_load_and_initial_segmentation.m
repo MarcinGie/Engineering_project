@@ -45,10 +45,10 @@ for eee=1:14
     % Assign the low and high thresholds for each color band.
     % Take a guess at the values that might work for the user's image.
     R(eee,1).hueThresholdLow = double(0/255);
-    R(eee,1).hueThresholdHigh = double(19/255);
-    R(eee,1).saturationThresholdLow = double(30/255);
+    R(eee,1).hueThresholdHigh = double(20/255);
+    R(eee,1).saturationThresholdLow = double(20/255);
     R(eee,1).saturationThresholdHigh = double(255/255);
-    R(eee,1).valueThresholdLow = double(50/255);
+    R(eee,1).valueThresholdLow = double(10/255);
     R(eee,1).valueThresholdHigh = double(255/255);
     
     % Now apply each color band's particular thresholds to the color band
@@ -61,7 +61,7 @@ for eee=1:14
     
     
     R(eee,1).K1pr_auto = orangeObjectsMask; %obraz progowania progiem automatycznym 
-    P_300 = bwareaopen(R(eee,1).K1pr_auto, 200); %usuniêcie obiektów o mniejszej iloœci pikseli ni¿ 50
+    P_300 = bwareaopen(R(eee,1).K1pr_auto, 50); %usuniêcie obiektów o mniejszej iloœci pikseli ni¿ 50
     P_WDZ = imfill(P_300, 'holes'); %wype³nienie dziur
  %%   
     %1)
@@ -81,7 +81,7 @@ for eee=1:14
     end
     
     %2)
-    P_DO = bwareaopen(P_WDZ, 8000); %wszystkie du¿e obiekty
+    P_DO = bwareaopen(P_WDZ, 2000); %wszystkie du¿e obiekty
     
     % sumowanie obrazów 1) i 2)
     if a>0
