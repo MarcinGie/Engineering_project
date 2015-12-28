@@ -1,151 +1,113 @@
 
-% przetwarzanie w zakresie BoundingBox znalezionego w etapie r_2
-% na pe?nej rozdzielczo?ci. Doprecyzowanie wysoko?ci progu i ostateczna
+% przetwarzanie w zakresie BoundingBox znalezionego w etapie r_2, klasteryzacja i ostateczna
 % decyzja czy mamy do czynienia ze znakiem
 
 tic
 sciezka_sieci = 'C:\Users\Marcin\Desktop\2015-01-skrypty\';
-spis_tst = 'pliki.txt'; % spis plikow do testowania
-ile_klas = 2;  
-nazwa_sieci='net_scalone_13'; %tu wybieramy siec
 
-load([sciezka_sieci nazwa_sieci]); %ladowanie sieci
+dysk = strel('disk',4);
 mimj_ideal=0.25;
 fa_ideal=0.85;
+close all;
+
 
 for eee=1:14
-	[a b]=size(R(eee,1).W_O);
-    z=1;
-    for j=1:a 
-        if R(eee,1).W_O(j,1).bz==0 
-        	% przeliczenie BoundingBox z uk?adu mniejszej rozdzielczo?ci na wi?ksz?
-            R(eee,1).TZ(z,1).BB=4*R(eee,1).W_O(j,1).bb_pr;
-            R(eee,1).TZ(z,1).Ow=imcrop(R(eee,1).O,R(eee,1).TZ(z,1).BB);
-            Ow_hsv=rgb2hsv(R(eee,1).TZ(z,1).Ow);
-            [aa bb cc]=size(R(eee,1).TZ(z,1).Ow);
-            D=cat(1,(reshape(Ow_hsv(:,:,1),1,(aa*bb))),(reshape(Ow_hsv(:,:,2),1,(aa*bb))),(reshape(Ow_hsv(:,:,3),1,(aa*bb)))); % wektor wej?ciowy do sieci
-            k1k2=sim(net2,D); %?adowanie macierzy do sieci
-            K1=reshape(k1k2(1,:),aa,bb); %obraz odpowiedzi w?z?a K1 sieci 
-            %przepisanie danych testowanych do innej cz??ci struktury, ?eby nie musie? sprawdza? za ka?dym razem czy wcze?niej nie zosta?o co? wykluczone z oblicze?
-            R(eee,1).TZ(z,1).K1=K1; 
-            R(eee,1).TZ(z,1).prog=R(eee,1).W_O(j,1).prog;
-            z=z+1;
-            clear D Ow_hsv aa bb cc k1k2 K1 %czyszczenie danych, bo ju? mi brakuje pomys?ów w nazewnictwie zmiennych
-        end
-    end
-end
-%%
-for eee=1:14
-    [a b]=size(R(eee,1).TZ);
+    [a b]=size(R(eee,1).W_O);
+    i=1;
     for j=1:a
-    	K=im2bw(R(eee,1).TZ(j,1).K1,R(eee,1).TZ(j,1).prog);
-    	KK = bwareaopen(K, 100);
-        if nnz(KK)>0
-            pr=R(eee,1).TZ(j,1).prog;
-            B=im2double(KK);
-            stat=regionprops(B,'Orientation');
-            if stat.Orientation<0 %wyznaczenie k?ta dla imrotate
-                kat=-90-stat.Orientation;
-            else
-                kat=90-stat.Orientation;
-            end
-            BR=imrotate(B,kat);
-            BR_stat=regionprops(BR,'Area','MajorAxisLength','MinorAxisLength','BoundingBox');
-            BR_mimj=BR_stat.MinorAxisLength/BR_stat.MajorAxisLength;
-            BR_FA=BR_stat.Area/(BR_stat.BoundingBox(1,3)*BR_stat.BoundingBox(1,4));
-            BR_ode=sqrt(((BR_mimj-mimj_ideal)^2)+((BR_FA-fa_ideal)^2));
-            proba=0;
-            R(eee,1).TZ(j,1).bz=1;
-            if pr>0.7
-            for i=(pr-0.0001):-0.0001:0.7 % w poprzednim etapie dobierano w ten sposób próg, ale robiono to w mniejszej rozdzielczo?ci, i z dylatacj? wi?c wyniki mog? si? znacznie ró?ni?. St?d powtórne przetwarzanie.
-                if proba==1, break, end 
-                Z=im2bw(R(eee,1).TZ(j,1).K1,i);
-                ZZ=bwareaopen(Z, 100);
-                W=im2double(ZZ);
-                W_stat=regionprops(W,'Orientation');
-                if W_stat.Orientation<0 %wyznaczenie k?ta dla imrotate
-                    kat=-90-W_stat.Orientation;
+        figure;
+        subplot(1,4,1);
+        t=sprintf('zdjecie %d',eee);
+        imshow(R(eee,1).W_O(j,1).O_cropped),title(t);
+        nColors=2;
+        fprintf('\nklasteryzacja - %d klastrow', nColors);
+        %2 Convert image from RGB to L*a*b space
+        cform = makecform('srgb2lab');
+        lab_he = applycform(R(eee,1).W_O(j,1).O_cropped,cform);
+
+        %3 Classify the colors in *a*b space using k-means clustering
+        ab = double(lab_he(:,:,2:3));
+        nrows = size(ab,1);
+        ncols = size(ab,2);
+        ab = reshape(ab,nrows*ncols,2);
+
+        % repeat the clustering 3 times to avoid local minima
+        [cluster_idx, cluster_center] = kmeans(ab,nColors,'start','uniform','emptyaction','singleton','Replicates',3,'distance','sqEuclidean');
+
+        %4 Label every pixel in the Image using the results from k-means
+        pixel_labels = reshape(cluster_idx,nrows,ncols);
+
+        %5 Create images that segment source image by color
+        segmented_images = cell(1,3);
+        rgb_label = repmat(pixel_labels,[1 1 3]);
+        
+        for k = 1:nColors
+            color = R(eee,1).W_O(j,1).O_cropped;
+            color(rgb_label ~= k) = 0;
+            segmented_images{k} = color;
+            
+            R(eee,1).W_O(j,1).K1pr_auto(:,:,k) = im2bw(segmented_images{k},0.001);
+            P_200 = bwareaopen(R(eee,1).W_O(j,1).K1pr_auto(:,:,k), 800); %usuniecie obiektów o mniejszej iloœci pikseli niz 800
+            DYL = imdilate(P_200,dysk); %dylatacja tylko po to, zeby polaczyc obszary lezce blisko w jeden
+            P_WDZ = imfill(DYL, 'holes'); %wypelnienie dziur
+            subplot(1,4,k+1);
+            imshow(P_WDZ);
+% - sprawdzenie czy faktycznie mamy znak
+            
+
+            B1 = bwareaopen(P_WDZ, 200); % usuniecie malych obiektów
+            IL_OB=bwlabel(B1,8);
+            if nnz(IL_OB)>0
+                stat_at=regionprops(IL_OB,'Area','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation','FilledImage');
+                poloz_at=find([stat_at.Area] == max([stat_at.Area])); %znalezienie najwiekszego obiektu
+                [fa1_at,fa2_at]=size(stat_at(poloz_at,1).FilledImage); %pobranie rozmiarów bounding box obiektu
+                FA_at=stat_at(poloz_at,1).Area/(fa1_at*fa2_at); %czesc obszaru zajeta przez znak
+                mimj_at=stat_at(poloz_at,1).MinorAxisLength/stat_at(poloz_at,1).MajorAxisLength; %stusunek dlugosci boków
+                if stat_at(poloz_at,1).Orientation<-85 || stat_at(poloz_at,1).Orientation>85 %kat miedzy elipsa najwiekszego obiektu a osia X
+                    pr_fa_at=0.60;
                 else
-                    kat=90-W_stat.Orientation;
+                    pr_fa_at=0.30;
                 end
-                WR=imrotate(W,kat);
-                WR_stat=regionprops(WR,'Area','MajorAxisLength','MinorAxisLength','BoundingBox');
-                WR_mimj=WR_stat.MinorAxisLength/WR_stat.MajorAxisLength;
-                WR_FA=WR_stat.Area/(WR_stat.BoundingBox(1,3)*WR_stat.BoundingBox(1,4));
-                WR_ode=sqrt(((WR_mimj-mimj_ideal)^2)+((WR_FA-fa_ideal)^2));
-                
-                
-                
-                
-                if WR_ode>BR_ode && BR_ode<0.3
-                    proba=1;
-                    nowy_prog=i+0.0001;
-                    R(eee,1).TZ(j,1).prog_ost=nowy_prog;
-                    KZ=im2bw(R(eee,1).TZ(j,1).K1,nowy_prog);
-                    KZZ=bwareaopen(KZ, 100);
-                    KW=im2double(KZZ);
-                    KW_stat=regionprops(KW,'Orientation');
-                    if KW_stat.Orientation<0 %wyznaczenie k?ta dla imrotate
-                        kat=-90-KW_stat.Orientation;
+
+                if mimj_at<0.35 && mimj_at>0.1 && (stat_at(poloz_at,1).Orientation<-60 || stat_at(poloz_at,1).Orientation>60) && FA_at>pr_fa_at && FA_at<1 && stat_at(poloz_at,1).Area>6500
+
+                    SP_0=B1;
+                    SP = bwareaopen(SP_0, 200);
+                    SPIL = bwlabel(SP);
+                    spt=regionprops(SPIL,'Area','Orientation','BoundingBox');
+                    sppol=find([spt.Area] == max([spt.Area]));
+                    if spt(sppol,1).Orientation<0 %wyznaczenie kata dla imrotate
+                        kat=-90-spt(sppol,1).Orientation;
                     else
-                        kat=90-KW_stat.Orientation;
+                        kat=90-spt(sppol,1).Orientation;
                     end
-                    KWR=imrotate(KW,kat);
-                    R(eee,1).TZ(j,1).KandydatZnak=KWR;
-                    R(eee,1).TZ(j,1).odl_ide=BR_ode;
-                    R(eee,1).TZ(j,1).bz=0;
-                    fprintf('tu');
-                elseif i==0.7 && WR_ode<0.3
-                    nowy_prog=i;
-                    R(eee,1).TZ(j,1).prog_ost=nowy_prog;
-                    KZ=im2bw(R(eee,1).TZ(j,1).K1,nowy_prog);
-                    KZZ=bwareaopen(KZ, 100);
-                    KW=im2double(KZZ);
-                    KW_stat=regionprops(KW,'Orientation');
-                    if KW_stat.Orientation<0 %wyznaczenie k?ta dla imrotate
-                        kat=-90-KW_stat.Orientation;
-                    else
-                        kat=90-KW_stat.Orientation;
+                    SPR_0=imrotate(SP,kat);
+                    SPR = bwareaopen(SPR_0, 200);
+                    sprt=regionprops(SPR,'Area','MajorAxisLength','MinorAxisLength','FilledImage','BoundingBox');
+                    sprpol=find([sprt.Area] == max([sprt.Area]));
+                    sp_mimj=sprt(sprpol,1).MinorAxisLength/sprt(sprpol,1).MajorAxisLength;
+                    [spa,spb]=size(sprt(sprpol,1).FilledImage);
+                    sp_fa=sprt(sprpol,1).Area/(spa*spb); %czesc obszaru zajeta przez znak
+                    ode_sp=sqrt(((sp_mimj-mimj_ideal)^2)+((sp_fa-fa_ideal)^2));
+                    fprintf('\nrozmiar %d obiekt %d cos jak znak: %f',stat_at(poloz_at,1).Area,j,ode_sp);
+                    if ode_sp < 0.20
+                                     %jesli sprawdzany obiekt ma lepsze ode niz najlepszy dotychczasowy
+                            t=sprintf('\nrozmiar jak znak: %f',stat_at(poloz_at,1).Area);
+                            SPR_cropped=imcrop(SPR,sprt(sprpol,1).BoundingBox);
+                            subplot(1,4,4);
+                            im=imcrop(imrotate(DYL,kat),sprt(sprpol,1).BoundingBox);
+                            imshow(im),title(t);
+%                             i=i+1;
+                            R(eee,1).TZ(i,1).KandydatZnak=im;
+                            R(eee,1).TZ(i,1).bz=0;
                     end
-                    KWR=imrotate(KW,kat);
-                    R(eee,1).TZ(j,1).KandydatZnak=KWR;
-                    R(eee,1).TZ(j,1).odl_ide=WR_ode;
-                    R(eee,1).TZ(j,1).bz=0;
-                elseif i>0.7 
-                    BR_ode=WR_ode;
                 else
-                    R(eee,1).TZ(j,1).bz=1;
+                    R(eee,1).bz=1;
                 end
             end
-            else 
-                R(eee,1).TZ(j,1).prog_ost=0.7;
-                KZ=im2bw(R(eee,1).TZ(j,1).K1,0.7);
-                KZZ=bwareaopen(KZ, 100);
-                KW=im2double(KZZ);
-                KW_stat=regionprops(KW,'Orientation');
-                if KW_stat.Orientation<0 %wyznaczenie k?ta dla imrotate
-                    kat=-90-KW_stat.Orientation;
-                else
-                    kat=90-KW_stat.Orientation;
-                end
-                KWR=imrotate(KW,kat);
-                KWR_stat=regionprops(KWR,'Area','MajorAxisLength','MinorAxisLength','BoundingBox');
-                KWR_mimj=KWR_stat.MinorAxisLength/KWR_stat.MajorAxisLength;
-                KWR_FA=KWR_stat.Area/(KWR_stat.BoundingBox(1,3)*KWR_stat.BoundingBox(1,4));
-                KWR_ode=sqrt(((KWR_mimj-mimj_ideal)^2)+((KWR_FA-fa_ideal)^2));
-                R(eee,1).TZ(j,1).KandydatZnak=KWR;
-                R(eee,1).TZ(j,1).odl_ide=KWR_ode;
-                R(eee,1).TZ(j,1).bz=0;
-            end
-            %if R(eee,1).TZ(j,1).bz==0
-                %figure(eee);subplot(1,a,j);imshow(KWR);
-            %end
-            clearvars -except sciezka_data sciezka_sieci spis_tst nazwa_sieci net2 mimj_ideal fa_ideal R eee a j
-        else
-            R(eee,1).TZ(j,1).bz=1;
         end
     end
-    fprintf(' iteracja %d z 119 gotowa\n', eee)
-    clearvars -except sciezka_data sciezka_sieci spis_tst nazwa_sieci net2 mimj_ideal fa_ideal R eee a j
+    fprintf(' iteracja %d z 14 gotowa\n', eee)
+    clearvars -except dysk sciezka_data sciezka_sieci spis_tst nazwa_sieci net2 mimj_ideal fa_ideal R eee a j
 end
 toc
