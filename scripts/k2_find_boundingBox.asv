@@ -184,8 +184,8 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                         R(eee,1).K1_OST(:,:,k)=P_OST; %wynik pierwszej czesci skryptu
                         R(eee,1).t=1;
                     else
-                        [a,b]=size(R(eee,1).K1_OST(:,:,k-1));
-                        R(eee,1).K1_OST(:,:,k)=zeros(a,b);
+                        size_prev=size(R(eee,1).K1_OST(:,:,k-1));
+                        R(eee,1).K1_OST(:,:,k)=z
                         R(eee,1).t=0;    
                     end
 
