@@ -13,7 +13,6 @@ mimj_ideal=0.267;
 fa_ideal=0.85;
 il_zdjec=14;
 
-
 for eee=1:il_zdjec %dla kazdego zdjecia
     
     if R(eee,1).t==1
