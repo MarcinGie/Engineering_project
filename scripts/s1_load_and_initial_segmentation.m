@@ -42,14 +42,21 @@ for eee=1:14
     hImage = hsvImage(:,:,1);
     sImage = hsvImage(:,:,2);
     vImage = hsvImage(:,:,3);
+%     figure(eee);
+%     subplot(1,3,1);
+%     imshow(hImage),title('Hue');
+%     subplot(1,3,2);
+%     imshow(sImage),title('Saturation');
+%     subplot(1,3,3);
+%     imshow(vImage),title('Value');
     
     % Assign the low and high thresholds for each color band.
     % Take a guess at the values that might work for the user's image.
     R(eee,1).hueThresholdLow = double(0/255);
-    R(eee,1).hueThresholdHigh = double(22/255);
-    R(eee,1).saturationThresholdLow = double(20/255);
+    R(eee,1).hueThresholdHigh = double(30/255);
+    R(eee,1).saturationThresholdLow = double(0/255);
     R(eee,1).saturationThresholdHigh = double(255/255);
-    R(eee,1).valueThresholdLow = double(10/255);
+    R(eee,1).valueThresholdLow = double(0/255);
     R(eee,1).valueThresholdHigh = double(255/255);
     
     % Now apply each color band's particular thresholds to the color band
@@ -71,7 +78,7 @@ for eee=1:14
     ind = find([STATS.Orientation] >= 45 | [STATS.Orientation] <= -45); %wybór obiektów o odpowiednim nachyleniu
     P_ODS = ismember(IL,ind); %odsiew
     STATS = regionprops(P_ODS, 'MajorAxisLength','MinorAxisLength'); %obliczenie przekatnych obiektów
-    [a b]=size(STATS);
+    [a,b]=size(STATS);
     if a>0
         for i=1:a %dodanie informacji o stosunku boków
             STATS(i,1).mimj=STATS(i,1).MinorAxisLength/STATS(i,1).MajorAxisLength;
@@ -98,10 +105,10 @@ for eee=1:14
         R(eee,1).t=0;    
     end
     fprintf('Zdjecie %s iteracja %d z 14 gotowa. %d \n', R(eee,1).nazwa, eee, R(eee,1).t);
-    figure(eee);
-    imshow(P_OST);
+%     figure(eee);
+%     imshow(P_OST);
     clearvars -except R eee % czyszczenie, bo nie jestem w stanie kontrolowac, kiedy zmienna moze cos nabruzdzic przechodzac do nastepnej petli
-    
+
 end
 clearvars -except R
 toc
