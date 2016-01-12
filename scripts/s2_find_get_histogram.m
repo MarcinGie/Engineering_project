@@ -11,7 +11,7 @@ dysk = strel('disk',2);
 dysk_2=strel('disk',6);
 mimj_ideal=0.267;
 fa_ideal=0.85;
-il_zdjec=14;
+il_zdjec=6;
 
 % R(eee,1).hueThresholdLow = double(0/255);
 % R(eee,1).hueThresholdHigh = double(30/255);
@@ -20,7 +20,7 @@ il_zdjec=14;
 % R(eee,1).valueThresholdLow = double(0/255);
 % R(eee,1).valueThresholdHigh = double(255/255);
 
-for eee=1:il_zdjec %dla kazdego zdjecia
+for eee=6:il_zdjec %dla kazdego zdjecia
     R(eee,1).h=zeros(1,255);
     R(eee,1).s=zeros(1,255);
     R(eee,1).v=zeros(1,255);
@@ -29,7 +29,7 @@ for eee=1:il_zdjec %dla kazdego zdjecia
         znaleziono_znak=0;
         fprintf('\nZDJECIE %d',eee);
         
-        for h=0:255
+        for h=0:1
             fprintf('\nh=%d',h);
             
             for s=0:255 %dla kazdego klastra
@@ -51,9 +51,9 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                     % Combine the masks to find where all 3 are "true."
                     orangeObjectsMask = uint8(hueMask & saturationMask & valueMask);
                     
-                    DYL = imdilate(orangeObjectsMask,dysk); %dylatacja tylko po to, zeby polaczyc obszary lezce blisko w jeden
-                    P_WDZ = imfill(DYL, 'holes'); %wypelnienie dziur
-                    IL=bwlabel(P_WDZ);
+%                     DYL = imdilate(orangeObjectsMask,dysk); %dylatacja tylko po to, zeby polaczyc obszary lezce blisko w jeden
+%                     P_WDZ = imfill(DYL, 'holes'); %wypelnienie dziur
+                    IL=bwlabel(orangeObjectsMask);
                     STATS = regionprops(IL, 'BoundingBox'); 
                     R(eee,1).STATS=STATS;
                     [a,b]=size(STATS);
@@ -85,7 +85,7 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                             fprintf('(0)');
                             R(eee,1).bz=1;
                         end
-                         clearvars -except h s v R eee dysk dysk_2 mimj_ideal fa_ideal bb_pow proba proba2 STATS znaleziono_znak IL nColors
+                         clearvars -except h s v R il_zdjec eee dysk dysk_2 mimj_ideal fa_ideal bb_pow proba proba2 STATS znaleziono_znak IL nColors
                     end
                 end
                 
@@ -99,7 +99,7 @@ H=zeros(1,255);
 S=zeros(1,255);
 V=zeros(1,255);
 
-for eee=1:il_zdjec
+for eee=6:il_zdjec
     H=H+R(eee,1).h;
     S=S+R(eee,1).s;
     V=V+R(eee,1).v;
