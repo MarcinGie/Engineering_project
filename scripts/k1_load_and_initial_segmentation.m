@@ -33,8 +33,8 @@ end
 clearvars -except R nColors
 
 for eee=1:14
-    figure;    
-    subplot(2,4,1);
+%     figure;    
+%     subplot(2,4,1);
     imshow(R(eee,1).Or),title('Original');
     
     % 2 Convert image from RGB to L*a*b space
@@ -63,9 +63,9 @@ for eee=1:14
         color(rgb_label ~= k) = 0;
         segmented_images{k} = color;
 
-        subplot(2,4,k+1);
-        t = sprintf('Cluster %d',k);
-        imshow(im2bw(segmented_images{k},0.001)), title(t);
+%         subplot(2,4,k+1);
+%         t = sprintf('Cluster %d',k);
+%         imshow(im2bw(segmented_images{k},0.001)), title(t);
         
         R(eee,1).K1pr_auto(:,:,k) = im2bw(segmented_images{k},0.001);
         P_200 = bwareaopen(R(eee,1).K1pr_auto(:,:,k), 800); %usuniecie obiektów o mniejszej iloœci pikseli niz l00
@@ -105,13 +105,13 @@ for eee=1:14
    
     R(eee,1).nColors=nColors;
     fprintf('Zdjecie %s wstepnie przetworzone. Iteracja %d z 14 gotowa. %d \n', R(eee,1).nazwa, eee, R(eee,1).t)
-    for k = 1:nColors
-        if R(eee,1).t == 1
-            subplot(2,4,k+4);
-            t = sprintf('Result %d',k);
-            imshow(R(eee,1).K1_OST(:,:,k)),title(t);
-        end
-    end
+%     for k = 1:nColors
+%         if R(eee,1).t == 1
+%             subplot(2,4,k+4);
+%             t = sprintf('Result %d',k);
+%             imshow(R(eee,1).K1_OST(:,:,k)),title(t);
+%         end
+%     end
     clearvars -except R nColors % czyszczenie, bo nie jestem w stanie kontrolowac, kiedy zmienna moze cos nabruzdzic przechodzac dalej
     
 end

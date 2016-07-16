@@ -13,7 +13,6 @@ mimj_ideal=0.267;
 fa_ideal=0.85;
 il_zdjec=14;
 
-
 for eee=1:il_zdjec %dla kazdego zdjecia
     
     if R(eee,1).t==1
@@ -58,7 +57,7 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                             pr_fa_at=0.30;
                         end
             
-                        if mimj_at<0.35 && mimj_at>0.1 && (stat_at(poloz_at,1).Orientation<-60 || stat_at(poloz_at,1).Orientation>60) && FA_at>pr_fa_at && stat_at(poloz_at,1).Area>5800
+                        if mimj_at<0.35 && mimj_at>0.1 && (stat_at(poloz_at,1).Orientation<-60 || stat_at(poloz_at,1).Orientation>60) && FA_at>pr_fa_at && stat_at(poloz_at,1).Area>6500
 
                             SP_0=WYCINEK;
                             SP = bwareaopen(SP_0, 200);
@@ -78,7 +77,7 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                             [spa,spb]=size(sprt(sprpol,1).FilledImage);
                             sp_fa=sprt(sprpol,1).Area/(spa*spb); %czesc obszaru zajeta przez znak
                             ode_sp=sqrt(((sp_mimj-mimj_ideal)^2)+((sp_fa-fa_ideal)^2));
-                            if ode_sp < 0.35
+                            if ode_sp < 0.20
                                 if ode_sp<R(eee,1).ode_min(nColors)             %jesli sprawdzany obiekt ma lepsze ode niz najlepszy dotychczasowy
                                     fprintf('\nklaster %d obiekt %d cos jak znak: %f',k,j,ode_sp);
                                     SPR_cropped=imcrop(SPR,sprt(sprpol,1).BoundingBox);
@@ -184,6 +183,8 @@ for eee=1:il_zdjec %dla kazdego zdjecia
                         R(eee,1).K1_OST(:,:,k)=P_OST; %wynik pierwszej czesci skryptu
                         R(eee,1).t=1;
                     else
+                        [a,b]=size(R(eee,1).K1_OST(:,:,k-1));
+                        R(eee,1).K1_OST(:,:,k)=zeros(a,b);
                         R(eee,1).t=0;    
                     end
 
